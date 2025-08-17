@@ -2,7 +2,7 @@ name: Sync Clash Config
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # 每天早上6点执行
+    - cron: '0 22 * * *'  # 每天晚上22点执行
   workflow_dispatch:  # 允许手动触发
 
 permissions:
@@ -37,7 +37,19 @@ jobs:
             exit 1
           fi
 
+      - name: 检查文件是否有变更
+        id: check-changes
+        run: |
+          if git diff --exit-code --quiet clash1.yaml clash2.yaml; then
+            echo "没有检测到文件变更，跳过提交"
+            echo "::set-output name=has_changes::false"
+          else
+            echo "检测到文件变更，继续提交"
+            echo "::set-output name=has_changes::true"
+          fi
+
       - name: Commit and push changes
+        if: steps.check-changes.outputs.has_changes == 'true'
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
