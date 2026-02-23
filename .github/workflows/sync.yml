@@ -23,7 +23,7 @@ jobs:
 
       - name: Download clash1.yaml
         run: |
-          curl -o clash1.yaml https://clashfreenode.com/feed/clash-${{ steps.date.outputs.yyyyMMdd }}.yaml
+          curl -o clash1.yaml https://clashfreenode.com/sub/${{ steps.date.outputs.yyyyMMdd }}-clash.yaml
           if [ ! -s clash1.yaml ]; then
             echo "Failed to download clash1.yaml or file is empty"
             exit 1
